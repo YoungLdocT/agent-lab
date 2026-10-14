@@ -1,0 +1,24 @@
+{
+  "name": "agent-lab",
+  "version": "1.0.0",
+  "main": "llm.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "cross-env NODE_ENV=development tsx llm.ts",
+    "start": "cross-env NODE_ENV=production node dist/llm.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "cross-env": "^10.1.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.7",
+    "openai": "^6.49.0"
+  },
+  "type": "module"
+}
