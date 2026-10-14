@@ -4,8 +4,8 @@
   "main": "llm.js",
   "scripts": {
     "build": "tsc",
-    "dev": "cross-env NODE_ENV=development tsx llm.ts",
-    "start": "cross-env NODE_ENV=production node dist/llm.js"
+    "dev": "cross-env NODE_ENV=development tsx src/index.ts",
+    "start": "cross-env NODE_ENV=production node dist/index.js"
   },
   "author": "",
   "license": "MIT",
@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "dotenv": "^18.0.7",
-    "openai": "^6.49.0"
+    "openai": "^6.49.0",
+    "zod": "^4.6.7"
   },
   "type": "module"
 }
