@@ -1,0 +1,13 @@
+{
+  // 保存时自动格式化
+  "editor.formatOnSave": true,
+  // 全局默认格式化器设为 Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // 针对 TS/TSX 文件单独指定（双重保险）
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

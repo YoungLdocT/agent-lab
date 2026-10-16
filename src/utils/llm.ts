@@ -1,11 +1,7 @@
 import OpenAI from "openai";
 import dotenv from "dotenv";
 
-
-const envFile =
-  process.env.NODE_ENV === "production"
-    ? ".env.production"
-    : ".env.development";
+const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
 dotenv.config({ path: envFile });
 
 const openai = new OpenAI({
@@ -33,9 +29,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function get_stream_completion(prompt: string) {
   try {
     const stream = (await openai.chat.completions.create({
-      messages: [
-        { role: "user", content: prompt },
-      ],
+      messages: [{ role: "user", content: prompt }],
       model: "deepseek-flash",
       stream: true,
     } as any)) as unknown as AsyncIterable<OpenAI.Chat.ChatCompletionChunk>;
@@ -60,3 +54,24 @@ export async function get_stream_completion(prompt: string) {
     console.error(err);
   }
 }
+
+export const get_completion_from_messages = async (
+  input: string,
+  option: { systemPrompt?: string; history?: OpenAI.ChatCompletionMessageParam[] },
+  temperature = 0
+) => {
+  const messages = [
+    ...(option?.systemPrompt ? [{ role: "system", content: option?.systemPrompt }] : []),
+    ...(option?.history ?? []),
+    { role: "user", content: input },
+  ] as OpenAI.ChatCompletionMessageParam[];
+
+  const completion = await openai.chat.completions.create({
+    messages,
+    model: "deepseek-flash",
+    stream: false,
+    temperature,
+  });
+
+  return completion.choices?.[0]?.message?.content;
+};

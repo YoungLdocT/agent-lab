@@ -1,9 +1,9 @@
 {
   "name": "agent-lab",
   "version": "1.0.0",
-  "main": "llm.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --clean && tsc",
     "dev": "cross-env NODE_ENV=development tsx src/index.ts",
     "start": "cross-env NODE_ENV=production node dist/index.js"
   },
@@ -13,12 +13,15 @@
   "devDependencies": {
     "@types/node": "^26.6.5",
     "cross-env": "^10.1.0",
+    "prettier": "^3.9.10",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   },
   "dependencies": {
+    "@dqbd/tiktoken": "^1.0.22",
     "dotenv": "^18.0.7",
     "openai": "^6.49.0",
+    "redlinefy": "^0.1.0",
     "zod": "^4.6.7"
   },
   "type": "module"
