@@ -57,7 +57,7 @@ export async function get_stream_completion(prompt: string) {
 
 export const get_completion_from_messages = async (
   input: string,
-  option: { systemPrompt?: string; history?: OpenAI.ChatCompletionMessageParam[] },
+  option?: { systemPrompt?: string; history?: OpenAI.ChatCompletionMessageParam[] },
   temperature = 0
 ) => {
   const messages = [

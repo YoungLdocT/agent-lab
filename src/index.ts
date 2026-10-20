@@ -1,5 +1,65 @@
-import { summarize, analyze, transform, extract, expand, chatBot } from "./utils";
 import { mockData1, mockData2, mockData3, mockData4, mockData5, mockData6 } from "./mock";
+import readline from "readline";
+import OpenAI from "openai";
+import { output, trim } from "zod";
+import { historyType } from "./commands/extract";
+import { commands, DEFAULT_COMMAND } from "./commands";
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+const parseInput = (input: string) => {
+  const trimmed = input.trim();
+  if (trimmed.startsWith("/")) {
+    const [cmd, ...rest] = trimmed.slice(1).split(" ");
+    return {
+      cmd,
+      args: rest.join(" "),
+    };
+  }
+  return {
+    cmd: DEFAULT_COMMAND,
+    args: trimmed,
+  };
+};
+
+const history: historyType = [];
+
+const chat = () => {
+  rl.question("提问：", async (input) => {
+    if (input == "结束提问") {
+      rl.close();
+      return;
+    }
+
+    const parsedInput = parseInput(input);
+
+    const handle = commands[parsedInput.cmd];
+
+    try {
+      const response = await handle(parsedInput.args, history);
+      console.log("ai:", response);
+
+      history.push({
+        role: "user",
+        content: parsedInput.args,
+      });
+      history.push({
+        role: "assistant",
+        content: response,
+      });
+      chat();
+    } catch (error) {}
+  });
+};
+
+rl.on("close", () => {
+  console.log("chat 已结束");
+});
+
+chat();
 
 // const result = await summarize(mockData1, { len: 50, audience: "新用户" });
 // console.log(result);
@@ -23,4 +83,4 @@ import { mockData1, mockData2, mockData3, mockData4, mockData5, mockData6 } from
 // const expanded = await expand(mockData6, "专业");
 // console.log(expanded);
 
-chatBot();
+// chatBot();

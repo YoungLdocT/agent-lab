@@ -2,12 +2,12 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "node",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src"  // 新增这一行，
+    "rootDir": "./src" // 新增这一行，
   },
-  "include": ["src/llm.ts", "src/env.d.ts"]
+  "include": ["src/**/*"]
 }

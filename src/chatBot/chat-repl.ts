@@ -1,6 +1,6 @@
 import readline from "readline";
 import OpenAI from "openai";
-import { get_completion_from_messages } from "./llm";
+import { get_completion_from_messages } from "../utils";
 
 export function chatBot() {
   const rl = readline.createInterface({
