@@ -1,18 +1,18 @@
 import OpenAI from "openai";
 import { extractPrompt, systemPrompt } from "../prompt";
-import { get_completion_from_messages } from "../utils";
+import { CompletionOption, createCompletion, getMessages } from "../utils";
+import { CommandOptions } from "./chat";
 
-export type historyType = OpenAI.ChatCompletionMessageParam[];
-
-export const extractCommand = async (input: string, history: historyType) => {
+export const extractCommand = async (
+  input: string,
+  history: OpenAI.ChatCompletionMessageParam[],
+  option?: CommandOptions
+) => {
   const extractedPrompt = extractPrompt(input);
 
-  return get_completion_from_messages(
-    extractedPrompt,
-    {
-      systemPrompt,
-      history,
-    },
-    0.2
-  );
+  const messages = getMessages(extractedPrompt, history, systemPrompt);
+
+  return createCompletion(messages, {
+    temperature: 0.2,
+  });
 };

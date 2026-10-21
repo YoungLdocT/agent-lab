@@ -1,24 +1,19 @@
 import OpenAI from "openai";
 import { summarizePrompt, systemPrompt } from "../prompt";
-import { get_completion_from_messages } from "../utils";
-
-export type historyType = OpenAI.ChatCompletionMessageParam[];
+import { CompletionOption, createCompletion, getMessages } from "../utils";
+import { CommandOptions } from "./chat";
 
 export const summarizeCommand = async (
   input: string,
-  history: historyType,
-  options?: {
-    [key: string]: any;
-  }
+  history: OpenAI.ChatCompletionMessageParam[],
+  options?: CommandOptions
 ) => {
-  const summarizedPrompt = summarizePrompt(input, length, options?.audience);
+  const { audience = "" } = options ?? {};
+  const summarizedPrompt = summarizePrompt(input, length, audience);
 
-  return get_completion_from_messages(
-    summarizedPrompt,
-    {
-      systemPrompt,
-      history,
-    },
-    0.2
-  );
+  const messages = getMessages(summarizedPrompt, history, systemPrompt);
+
+  return createCompletion(messages, {
+    temperature: 0.2,
+  });
 };

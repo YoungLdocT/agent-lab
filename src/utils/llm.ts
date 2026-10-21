@@ -55,23 +55,54 @@ export async function get_stream_completion(prompt: string) {
   }
 }
 
-export const get_completion_from_messages = async (
+export interface CompletionOption {
+  temperature?: number;
+  tools?: OpenAI.ChatCompletionTool[];
+  executor?: (name: string, args: unknown) => Promise<any>;
+  maxTurns?: number;
+}
+
+export const getMessages = (
   input: string,
-  option?: { systemPrompt?: string; history?: OpenAI.ChatCompletionMessageParam[] },
-  temperature = 0
+  history?: OpenAI.ChatCompletionMessageParam[],
+  systemPrompt?: string
 ) => {
-  const messages = [
-    ...(option?.systemPrompt ? [{ role: "system", content: option?.systemPrompt }] : []),
-    ...(option?.history ?? []),
+  return [
+    ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
+    ...(history ?? []),
     { role: "user", content: input },
   ] as OpenAI.ChatCompletionMessageParam[];
+};
+
+export const createCompletion = async (
+  messages: OpenAI.ChatCompletionMessageParam[],
+  option: CompletionOption = {}
+) => {
+  const { temperature = 0 } = option;
 
   const completion = await openai.chat.completions.create({
     messages,
     model: "deepseek-flash",
     stream: false,
-    temperature,
+    temperature: temperature,
   });
 
   return completion.choices?.[0]?.message?.content;
+};
+
+export const createCompletionWithTools = async (
+  messages: OpenAI.ChatCompletionMessageParam[],
+  option: CompletionOption = {}
+) => {
+  const { temperature = 0, tools } = option;
+
+  const completion = await openai.chat.completions.create({
+    messages,
+    model: "deepseek-flash",
+    stream: false,
+    tools,
+    temperature,
+  });
+
+  return completion.choices?.[0]?.message;
 };

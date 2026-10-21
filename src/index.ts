@@ -2,7 +2,7 @@ import { mockData1, mockData2, mockData3, mockData4, mockData5, mockData6 } from
 import readline from "readline";
 import OpenAI from "openai";
 import { output, trim } from "zod";
-import { historyType } from "./commands/extract";
+import { HistoryType } from "./commands";
 import { commands, DEFAULT_COMMAND } from "./commands";
 
 const rl = readline.createInterface({
@@ -25,7 +25,7 @@ const parseInput = (input: string) => {
   };
 };
 
-const history: historyType = [];
+const history: HistoryType = [];
 
 const chat = () => {
   rl.question("提问：", async (input) => {
@@ -48,7 +48,7 @@ const chat = () => {
       });
       history.push({
         role: "assistant",
-        content: response,
+        content: typeof response == "string" ? response : response?.content,
       });
       chat();
     } catch (error) {}

@@ -1,6 +1,6 @@
 import readline from "readline";
 import OpenAI from "openai";
-import { get_completion_from_messages } from "../utils";
+import { getMessages, createCompletion } from "../utils";
 
 export function chatBot() {
   const rl = readline.createInterface({
@@ -19,9 +19,10 @@ export function chatBot() {
         return;
       }
 
-      const response = await get_completion_from_messages(input, {
-        systemPrompt: systemPrompt,
-        history,
+      const messages = getMessages(input, history, systemPrompt);
+
+      const response = await createCompletion(messages, {
+        temperature: 0.3,
       });
 
       history.push({
