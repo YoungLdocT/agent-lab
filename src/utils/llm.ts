@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import dotenv from "dotenv";
+import { ToolRegistryType } from "../tools";
 
 const envFile = process.env.NODE_ENV === "production" ? ".env.production" : ".env.development";
 dotenv.config({ path: envFile });
@@ -58,7 +59,7 @@ export async function get_stream_completion(prompt: string) {
 export interface CompletionOption {
   temperature?: number;
   tools?: OpenAI.ChatCompletionTool[];
-  executor?: (name: string, args: unknown) => Promise<any>;
+  executor?: (name: ToolRegistryType, args: unknown) => Promise<any>;
   maxTurns?: number;
 }
 

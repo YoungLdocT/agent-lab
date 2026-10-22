@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { extractPrompt, systemPrompt } from "../prompt";
-import { CompletionOption, getMessages, chatWithTool, weatherTool } from "../utils";
+import { CompletionOption, getMessages, chatWithTool } from "../utils";
+import { ALL_TOOLS, toolExecutor, toolRegistry } from "../tools";
 
 export const weatherCommand = (
   input: string,
@@ -9,13 +10,8 @@ export const weatherCommand = (
 ) => {
   const messages = getMessages(input, history, systemPrompt);
   return chatWithTool(messages, {
-    tools: [...weatherTool],
+    tools: ALL_TOOLS,
     temperature: 0.5,
-    executor: async () => {
-      return {
-        id: "0",
-        content: "Cloudy 7~13°C",
-      };
-    },
+    executor: toolExecutor,
   });
 };

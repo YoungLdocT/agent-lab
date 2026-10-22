@@ -1,25 +1,6 @@
 import OpenAI from "openai";
 import { CompletionOption, createCompletionWithTools } from "./llm";
-
-export const weatherTool = [
-  {
-    type: "function",
-    function: {
-      name: "get_weather",
-      description: "Get weather of a location, the user should supply a location first.",
-      parameters: {
-        type: "object",
-        properties: {
-          location: {
-            type: "string",
-            description: "The city and state, e.g. 北京",
-          },
-        },
-        require: ["location"],
-      },
-    },
-  } as const,
-];
+import { ToolRegistryType } from "../tools";
 
 export const chatWithTool = async (
   messages: OpenAI.ChatCompletionMessageParam[],
@@ -27,11 +8,16 @@ export const chatWithTool = async (
 ) => {
   //最多5轮，防止死循环
   for (let i = 0; i < 5; i++) {
+    console.log(`\n===== 第 ${i + 1} 轮调用模型 =====`);
+
     // 调用大模型
     const response = (await createCompletionWithTools(
       messages,
       options
     )) as OpenAI.Chat.Completions.ChatCompletionMessage;
+
+    // 打印模型原始返回
+    console.log("模型原始响应：", JSON.stringify(response, null, 2));
 
     // 将回复加入历史
     const fullMsg = {
@@ -49,18 +35,25 @@ export const chatWithTool = async (
     }
 
     // 有工具调用逐个执行
-    for (const tool of response?.tool_calls) {
-      if (tool.type !== "function") continue;
-      //mock 执行工具  const result = await executor(call.function.name, args)
-      const result = await options.executor?.(tool.function?.name, {});
-      // 结果传给模型，tool_call_idyao
+    for (const toolCall of response?.tool_calls) {
+      if (toolCall.type !== "function") continue;
+
+      console.log(`执行工具：${toolCall.function.name}`);
+      console.log("工具原始参数：", toolCall.function.arguments);
+
+      const args = JSON.parse(toolCall.function.arguments);
+
+      //mock 执行工具
+      const result = await options.executor?.(toolCall.function?.name as ToolRegistryType, args);
+      // 结果传给模型，tool_call_id
       messages.push({
         role: "tool",
-        content: result.content,
-        tool_call_id: result.id,
+        tool_call_id: toolCall.id,
+        content: JSON.stringify(result),
       });
+      console.log("已回传工具结果到模型");
     }
   }
 
-  return null;
+  throw new Error("工具调用超过最大轮次，任务未完成");
 };
