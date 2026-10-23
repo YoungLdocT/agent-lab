@@ -104,6 +104,7 @@ export const createCompletionWithTools = async (
     tools,
     temperature,
   });
+  console.log(completion.usage?.completion_tokens);
 
   return completion.choices?.[0]?.message;
 };

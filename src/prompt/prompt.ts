@@ -1,8 +1,6 @@
 import { get_completion } from "../utils/llm";
 import { mockData1, mockData2 } from "../mock";
 
-export const systemPrompt = "你是一个有礼貌的聊天机器人";
-
 export const extractPrompt = (text: string) => `
       你的任务是从以下<userText>标签的内容中提取关键信息，生成摘要，
 
@@ -25,8 +23,7 @@ export const analyzePrompt = (text: string) => `
       文本：      
       <userText>${text?.replace(/<userText\b[^>]*>/gi, "") || ""}</userText>`;
 
-export const transform = async (text: string, targetFormat: string) => {
-  const prompt = `
+export const transform = (text: string, targetFormat: string) => `
       你的任务是对以下<userText>标签中的内容进行处理, 你将按照以下步骤进行操作：
       1. 将其转换为${targetFormat}格式
       2. 分别展示正式和非正式的翻译结果
@@ -34,13 +31,7 @@ export const transform = async (text: string, targetFormat: string) => {
       文本：      
       <userText>${text?.replace(/<userText\b[^>]*>/gi, "") || ""}</userText>`;
 
-  const response = await get_completion(prompt);
-
-  return response;
-};
-
-export const expand = async (text: string) => {
-  const prompt = `
+export const expand = (text: string) => `
     你是客服ai助手, 你的任务根据<userText>标签中的客户评论给客户发送邮件回复，
     要求
     先根据客户评论判断客户情绪，
@@ -50,8 +41,3 @@ export const expand = async (text: string) => {
 
     客户评论：<userText>${text.replace(/<userText\b[^>]*>/gi, "")}</userText>
   `;
-
-  const response = await get_completion(prompt);
-
-  return response;
-};

@@ -2,8 +2,8 @@ import { mockData1, mockData2, mockData3, mockData4, mockData5, mockData6 } from
 import readline from "readline";
 import OpenAI from "openai";
 import { output, trim } from "zod";
-import { HistoryType } from "./commands";
-import { commands, DEFAULT_COMMAND } from "./commands";
+import { HistoryType, handleInput } from "./commands";
+import { DEFAULT_COMMAND } from "./utils/common";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -34,21 +34,21 @@ const chat = () => {
       return;
     }
 
-    const parsedInput = parseInput(input);
+    // const parsedInput = parseInput(input);
 
-    const handle = commands[parsedInput.cmd];
+    // const handle = commands[parsedInput.cmd];
 
     try {
-      const response = await handle(parsedInput.args, history);
+      const response = await handleInput(input, history);
       console.log("ai:", response);
 
       history.push({
         role: "user",
-        content: parsedInput.args,
+        content: input,
       });
       history.push({
         role: "assistant",
-        content: typeof response == "string" ? response : response?.content,
+        content: response,
       });
       chat();
     } catch (error) {}

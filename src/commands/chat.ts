@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { extractPrompt, systemPrompt } from "../prompt";
-import { CompletionOption, createCompletion, getMessages } from "../utils";
+import { chatWithTool, CompletionOption, createCompletion, getMessages } from "../utils";
+import { ALL_TOOLS, toolExecutor } from "../tools";
 
 export interface CommandOptions extends CompletionOption {
   systemPrompt?: string;
